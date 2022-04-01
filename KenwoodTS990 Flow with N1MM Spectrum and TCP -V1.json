@@ -1,0 +1,1215 @@
+[
+    {
+        "id": "747e5501.ce75cc",
+        "type": "tab",
+        "label": "KENWOOD -TS990 -TCP Communication",
+        "disabled": false,
+        "info": "Kenwood TS-990 TCP Communication using the Kenwood TCP Server. "
+    },
+    {
+        "id": "1d3f02e9.5e878d",
+        "type": "comment",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "info": "Flow for communicating to Kenwood TS-990 over the LAN and get the frequency and Mode Parameters.\n\nAlso exposes a TCP Port 7355 for other Applications to communicate to Radio over TCP , for example the RUMLog NG can connect to the Radio over TCP and fet the required data. Similarly the ESP32 running a Band Decoder can fetch the data\n",
+        "x": 80,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "241e3a2e09fbdf6e",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "To UTF-8 Format",
+        "func": "msg.payload = msg.payload.toString('utf8');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 420,
+        "wires": [
+            [
+                "cf0442cfdd642d16"
+            ]
+        ]
+    },
+    {
+        "id": "32d9d83023fca71a",
+        "type": "catch",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 80,
+        "y": 820,
+        "wires": [
+            [
+                "b632b0ca99a5ec92",
+                "bab58e0d1009231c"
+            ]
+        ]
+    },
+    {
+        "id": "b632b0ca99a5ec92",
+        "type": "debug",
+        "z": "747e5501.ce75cc",
+        "name": "Errors",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 240,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "cf0442cfdd642d16",
+        "type": "split",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "splt": ";",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 730,
+        "y": 500,
+        "wires": [
+            [
+                "08c432026ad35ca0",
+                "f09d158377481c79",
+                "5b533edf716d9c39",
+                "869e916588687285",
+                "9bc4232094bdfaf2",
+                "cd5c4590a3317d02",
+                "d8ef294cc48255b6",
+                "9a9444205d1c7cef"
+            ]
+        ]
+    },
+    {
+        "id": "08c432026ad35ca0",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "IF Filter",
+        "func": "if(msg.payload.includes(\"IF\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    msg.payload = (parseInt(msg.payload.substr(5,7)))/100000;\n    msg.payload = parseFloat(msg.payload).toFixed(5);\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 460,
+        "wires": [
+            [
+                "45707f02476478fd"
+            ]
+        ]
+    },
+    {
+        "id": "f09d158377481c79",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "FA Filter",
+        "func": "if(msg.payload.includes(\"FA\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    msg.payload = (parseInt(msg.payload.substr(5,8)))/1000000;\n    msg.payload = parseFloat(msg.payload).toFixed(6);\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 340,
+        "wires": [
+            [
+                "81b0c01a91963742",
+                "5bdbd2087fbd4bcb"
+            ]
+        ]
+    },
+    {
+        "id": "5b533edf716d9c39",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "FB Filter",
+        "func": "if(msg.payload.includes(\"FB\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    msg.payload = (parseInt(msg.payload.substr(5,8)))/1000000;\n    msg.payload = parseFloat(msg.payload).toFixed(6);\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 400,
+        "wires": [
+            [
+                "f07bf2c0ca2280ef"
+            ]
+        ]
+    },
+    {
+        "id": "81b0c01a91963742",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "VFO-A",
+        "label": "VFO-A",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "etc",
+        "x": 1430,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f07bf2c0ca2280ef",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "VFO-B",
+        "label": "VFO-B",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1430,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5f813120a28402f4",
+        "type": "tcp in",
+        "z": "747e5501.ce75cc",
+        "name": "From External TCP",
+        "server": "server",
+        "host": "",
+        "port": "7355",
+        "datamode": "stream",
+        "datatype": "buffer",
+        "newline": "",
+        "topic": "",
+        "base64": false,
+        "x": 110,
+        "y": 640,
+        "wires": [
+            [
+                "492eec473871070c"
+            ]
+        ]
+    },
+    {
+        "id": "8a040430c4da1298",
+        "type": "tcp out",
+        "z": "747e5501.ce75cc",
+        "name": "To External TCP",
+        "host": "",
+        "port": "7355",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "x": 740,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "2179fdc9e4c971f9",
+        "type": "status",
+        "z": "747e5501.ce75cc",
+        "name": "TS990TCPStatus",
+        "scope": [
+            "6941e6852473e7db"
+        ],
+        "x": 100,
+        "y": 760,
+        "wires": [
+            [
+                "fd888bdb1ebed612"
+            ]
+        ]
+    },
+    {
+        "id": "aaaba061b012c246",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "TS990 -TCP -Status",
+        "label": "TS990",
+        "format": "{{msg.status.text}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 540,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "0c938dc2538055f0",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "##CN;",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "##CN;",
+        "payloadType": "str",
+        "x": 100,
+        "y": 60,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "65efbc9252292c53",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "##ID",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "6",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.5",
+        "topic": "",
+        "payload": "##ID57adminKenwood",
+        "payloadType": "str",
+        "x": 90,
+        "y": 100,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "6941e6852473e7db",
+        "type": "tcp request",
+        "z": "747e5501.ce75cc",
+        "name": "TS990 TCP Client",
+        "server": "192.168.1.102",
+        "port": "60000",
+        "out": "sit",
+        "ret": "buffer",
+        "splitc": " ",
+        "newline": "",
+        "tls": "",
+        "x": 730,
+        "y": 260,
+        "wires": [
+            [
+                "fc2f9a93d5b5b4f1",
+                "0b6eb89f2404a5b9",
+                "b090736e50babca1"
+            ]
+        ]
+    },
+    {
+        "id": "9ac44636718ae30c",
+        "type": "converter",
+        "z": "747e5501.ce75cc",
+        "name": "UTF-16LE Encoding",
+        "from": "utf16le",
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "6941e6852473e7db"
+            ]
+        ]
+    },
+    {
+        "id": "fc2f9a93d5b5b4f1",
+        "type": "converter",
+        "z": "747e5501.ce75cc",
+        "name": "UTF-16LE   Encoding",
+        "from": "utf16le",
+        "x": 1020,
+        "y": 260,
+        "wires": [
+            [
+                "241e3a2e09fbdf6e",
+                "8a040430c4da1298"
+            ]
+        ]
+    },
+    {
+        "id": "cd40fdb1e8b5a6e2",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.3",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "FA;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 140,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "15ef14eb653ad9ca",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.3",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1.1",
+        "topic": "",
+        "payload": "FB;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 180,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "45707f02476478fd",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "d": true,
+        "group": "3092b7711ff310b8",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "IF",
+        "label": "IF ",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1430,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "4d93672914926d3e",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1.2",
+        "topic": "",
+        "payload": "IF;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 460,
+        "wires": [
+            [
+                "28f8adb07ca5c180"
+            ]
+        ]
+    },
+    {
+        "id": "2ebee63cd19a113b",
+        "type": "gate",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "controlTopic": "control",
+        "defaultState": "closed",
+        "openCmd": "open",
+        "closeCmd": "close",
+        "toggleCmd": "toggle",
+        "defaultCmd": "default",
+        "statusCmd": "status",
+        "persist": false,
+        "storeName": "memory",
+        "x": 230,
+        "y": 520,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "492eec473871070c",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "To UTF-8 Format",
+        "func": "msg.payload = msg.payload.toString('utf8');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 580,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "28f8adb07ca5c180",
+        "type": "gate",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "controlTopic": "control",
+        "defaultState": "open",
+        "openCmd": "close",
+        "closeCmd": "open",
+        "toggleCmd": "toggle",
+        "defaultCmd": "default",
+        "statusCmd": "status",
+        "persist": false,
+        "storeName": "memory",
+        "x": 230,
+        "y": 460,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "1ddfad30baab5491",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.3",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1.1",
+        "topic": "",
+        "payload": "OM0;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 220,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "869e916588687285",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "VFO-A MODE Filter",
+        "func": "if(msg.payload.includes(\"OM0\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    switch(msg.payload)\n    {\n        case \"OM01\":\n            {\n                msg.payload =  \"LSB\";\n                return msg;\n            }\n        case \"OM02\":\n            {\n                msg.payload =  \"USB\";\n                return msg;\n            }\n        case \"OM03\":\n            {\n                msg.payload =  \"CW\";\n                return msg;\n            }\n        case \"OM07\":\n            {\n                msg.payload =  \"CW-R\";\n                return msg;\n            }\n        case \"OM04\":\n            {\n                msg.payload =  \"FM\";\n                return msg;\n            }\n        case \"OM05\":\n            {\n                msg.payload =  \"AM\";\n                return msg;\n            }\n        case \"OM06\":\n            {\n                msg.payload =  \"FSK\";\n                return msg;\n            }\n        case \"OM09\":\n            {\n                msg.payload =  \"FSK-R\";\n                return msg;\n            }\n        case \"OM0A\":\n            {\n                msg.payload =  \"PSK\";\n                return msg;\n            }\n        case \"OM0B\":\n            {\n                msg.payload =  \"PSK-R\";\n                return msg;\n            }\n        case \"OM0C\":\n            {\n                msg.payload =  \"LSB-D1\";\n                return msg;\n            }\n        case \"OM0D\":\n            {\n                msg.payload =  \"USB-D1\";\n                return msg;\n            }\n    }\n    \n    msg.payload =  \"UNKNOWN\";\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 520,
+        "wires": [
+            [
+                "ecfa035f039a0260"
+            ]
+        ]
+    },
+    {
+        "id": "ecfa035f039a0260",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "VFO-A Mode",
+        "label": "VFO-A Mode",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1450,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "9bc4232094bdfaf2",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "VFO-B MODE Filter",
+        "func": "if(msg.payload.includes(\"OM1\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    switch(msg.payload)\n    {\n        case \"OM11\":\n            {\n                msg.payload =  \"LSB\";\n                return msg;\n            }\n        case \"OM12\":\n            {\n                msg.payload =  \"USB\";\n                return msg;\n            }\n        case \"OM13\":\n            {\n                msg.payload =  \"CW\";\n                return msg;\n            }\n        case \"OM17\":\n            {\n                msg.payload =  \"CW-R\";\n                return msg;\n            }\n        case \"OM14\":\n            {\n                msg.payload =  \"FM\";\n                return msg;\n            }\n        case \"OM15\":\n            {\n                msg.payload =  \"AM\";\n                return msg;\n            }\n        case \"OM16\":\n            {\n                msg.payload =  \"FSK\";\n                return msg;\n            }\n        case \"OM19\":\n            {\n                msg.payload =  \"FSK-R\";\n                return msg;\n            }\n        case \"OM1A\":\n            {\n                msg.payload =  \"PSK\";\n                return msg;\n            }\n        case \"OM1B\":\n            {\n                msg.payload =  \"PSK-R\";\n                return msg;\n            }\n        case \"OM1C\":\n            {\n                msg.payload =  \"LSB-D1\";\n                return msg;\n            }\n        case \"OM1D\":\n            {\n                msg.payload =  \"USB-D1\";\n                return msg;\n            }\n    }\n    \n    msg.payload =  \"UNKNOWN\";\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 580,
+        "wires": [
+            [
+                "f423657e660b3b0b"
+            ]
+        ]
+    },
+    {
+        "id": "f423657e660b3b0b",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "VFO-B Mode",
+        "label": "VFO-B Mode",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1450,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "a890f24d3bc972ee",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.3",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1.1",
+        "topic": "",
+        "payload": "OM1;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 260,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "fd888bdb1ebed612",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "TCP Status Format",
+        "func": "if(msg.status.text ==\"common.status.connected\")\n{\n    msg.status.text = \"Connected\";\n    return msg;\n}\nif(msg.status.text ==\"common.status.disconnected\")\n{\n    msg.status.text = \"Disconnected\";\n    return msg;\n}\nif(msg.status.text ==\"common.status.error\")\n{\n    msg.status.text = \"Error\";\n    return msg;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 760,
+        "wires": [
+            [
+                "aaaba061b012c246"
+            ]
+        ]
+    },
+    {
+        "id": "bab58e0d1009231c",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3f3236e1fcd06105",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Errors",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 250,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "10543625c7823182",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "AI2",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "AI2;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 300,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "5bdbd2087fbd4bcb",
+        "type": "link out",
+        "z": "747e5501.ce75cc",
+        "name": "VFO-A-TS990",
+        "mode": "link",
+        "links": [
+            "301703c89f59ca8e"
+        ],
+        "x": 1395,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d8ef294cc48255b6",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "Bandscope Upper Edge",
+        "func": "if(msg.payload.includes(\"BS5\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    msg.payload = msg.payload.substring(11,20);\n    msg.payload = msg.payload.substr(0,5);\n    //msg.payload = msg.payload + \".00\";\n    flow.set(\"ts990_bs_upperedge\", msg.payload);\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 700,
+        "wires": [
+            [
+                "cbaa1986a329f3a7"
+            ]
+        ]
+    },
+    {
+        "id": "cd5c4590a3317d02",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "Bandscope Lower Edge",
+        "func": "if(msg.payload.includes(\"BS5\"))\n{\n    msg.payload = msg.payload.toString('utf8');\n    msg.payload = msg.payload.slice(3,12);\n    msg.payload = msg.payload.substr(0,5);\n    //msg.payload = msg.payload + \".00\";\n    flow.set(\"ts990_bs_loweredge\", msg.payload);\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 640,
+        "wires": [
+            [
+                "3f7a150972c62cd9"
+            ]
+        ]
+    },
+    {
+        "id": "9a9444205d1c7cef",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "BandScope Stream",
+        "func": "if(msg.payload.includes(\"##DD\"))\n{\n    msg.payload = msg.payload.substring(5);\n    msg.payload = msg.payload.slice(0,-1);\n    var stringValue = '';\n    //msgLength = 0;\n    //msgLength = msg.length;\n    hexVal = 0;\n    for (i = 0; i < msg.payload.length / 2; i++)\n    {\n        hexVar = msg.payload.substr(i * 2, 2);\n        hexVal = parseInt(hexVar, 16);\n        hexVal = hexVal - 140;\n        hexVal = Math.abs(hexVal);\n        stringValue += hexVal;\n        stringValue += \",\";\n    }\n    //msg.payload = stringValue.slice(0,-1);\n    msg.payload = stringValue.slice(0,-5);\n    return msg;\n}\nelse\n{\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1230,
+        "y": 760,
+        "wires": [
+            [
+                "42f6880419aecd05"
+            ]
+        ]
+    },
+    {
+        "id": "42f6880419aecd05",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "N1MM Bandscope XML",
+        "func": "var strN1MMUdpXmlTag1 = \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>\";\nvar strN1MMUdpXmlTag2 = \"<Spectrum><Name>TS990_BandScope</Name><LowScopeFrequency>\";\nvar strBandScopeLower = flow.get(\"ts990_bs_loweredge\");\nvar strN1MMUdpXmlTag3 = \"</LowScopeFrequency><HighScopeFrequency>\";\nvar strBandScopeUpper = flow.get(\"ts990_bs_upperedge\");\nvar strN1MMUdpXmlTag4 = \"</HighScopeFrequency><ScalingFactor>0.3900</ScalingFactor>\";\nvar strN1MMUdpXmlTag5 = \"<DataCount>639</DataCount><SpectrumData>\";\nvar strN1MMBandScopeData = msg.payload;\nvar strN1MMUdpXmlTag6 = \"</SpectrumData></Spectrum>\";\nmsg.payload = strN1MMUdpXmlTag1 + strN1MMUdpXmlTag2 + strBandScopeLower + strN1MMUdpXmlTag3 + strBandScopeUpper + strN1MMUdpXmlTag4 + strN1MMUdpXmlTag5 + strN1MMBandScopeData + strN1MMUdpXmlTag6;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 820,
+        "wires": [
+            [
+                "a066505f0683eea3"
+            ]
+        ]
+    },
+    {
+        "id": "cbaa1986a329f3a7",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "Upper Edge",
+        "label": "Upper  Edge",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1450,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "3f7a150972c62cd9",
+        "type": "ui_text",
+        "z": "747e5501.ce75cc",
+        "group": "3092b7711ff310b8",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "Lower Edge",
+        "label": "Lower  Edge",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1450,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "a066505f0683eea3",
+        "type": "udp out",
+        "z": "747e5501.ce75cc",
+        "name": "N1MM UDP",
+        "addr": "192.168.1.184",
+        "iface": "",
+        "port": "13064",
+        "ipv": "udp4",
+        "outport": "",
+        "base64": false,
+        "multicast": "broad",
+        "x": 1470,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "7992d012ab40338b",
+        "type": "ui_switch",
+        "z": "747e5501.ce75cc",
+        "name": "N1MM BandScope",
+        "label": "N1MM BandScope",
+        "tooltip": "",
+        "group": "3092b7711ff310b8",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "DD01;",
+        "onvalueType": "str",
+        "onicon": "fa-2x fa-power-off",
+        "oncolor": "lightgreen",
+        "offvalue": "DD00;",
+        "offvalueType": "str",
+        "officon": "fa-2x fa-power-off",
+        "offcolor": "red",
+        "animate": true,
+        "className": "",
+        "x": 110,
+        "y": 400,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "a461a7f5ce509ee2",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "##ID",
+        "func": "if(msg.payload.includes(\"##ID\"))\n{\n    msg.payload = \"##ID1;\"\n    return msg;\n}\nelse\n{\n    msg.payload = \"##ID0;\";\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 40,
+        "wires": [
+            [
+                "0b6eb89f2404a5b9"
+            ]
+        ]
+    },
+    {
+        "id": "0c8890a7da0b0e05",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "##CN1",
+        "func": "if(msg.payload.includes(\"##CN\"))\n{\n    msg.payload = \"##CN1;\"\n    return msg;\n}\nelse\n{\n    msg.payload = \"##CN0;\";\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 80,
+        "wires": [
+            [
+                "0b6eb89f2404a5b9"
+            ]
+        ]
+    },
+    {
+        "id": "1ac8a58caf1d74ea",
+        "type": "inject",
+        "z": "747e5501.ce75cc",
+        "name": "BS5",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": ".5",
+        "topic": "",
+        "payload": "BS5;",
+        "payloadType": "str",
+        "x": 90,
+        "y": 340,
+        "wires": [
+            [
+                "9ac44636718ae30c"
+            ]
+        ]
+    },
+    {
+        "id": "723e25d9d841f821",
+        "type": "tcp in",
+        "z": "747e5501.ce75cc",
+        "name": "DXLOG",
+        "server": "server",
+        "host": "",
+        "port": "7366",
+        "datamode": "stream",
+        "datatype": "buffer",
+        "newline": "",
+        "topic": "",
+        "base64": false,
+        "tls": "",
+        "x": 350,
+        "y": 60,
+        "wires": [
+            [
+                "3181f187fad46659"
+            ]
+        ]
+    },
+    {
+        "id": "9567269ea56c3f4a",
+        "type": "tcp out",
+        "z": "747e5501.ce75cc",
+        "name": "DXLOG",
+        "host": "",
+        "port": "",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "tls": "",
+        "x": 1140,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "0b6eb89f2404a5b9",
+        "type": "converter",
+        "z": "747e5501.ce75cc",
+        "name": "UTF-16LE Encoding",
+        "from": "utf16le",
+        "x": 960,
+        "y": 100,
+        "wires": [
+            [
+                "9567269ea56c3f4a"
+            ]
+        ]
+    },
+    {
+        "id": "3181f187fad46659",
+        "type": "converter",
+        "z": "747e5501.ce75cc",
+        "name": "UTF-16LE Encoding",
+        "from": "utf16le",
+        "x": 520,
+        "y": 60,
+        "wires": [
+            [
+                "a461a7f5ce509ee2",
+                "0c8890a7da0b0e05",
+                "6941e6852473e7db"
+            ]
+        ]
+    },
+    {
+        "id": "71f78a9826a1fad2",
+        "type": "ui_switch",
+        "z": "747e5501.ce75cc",
+        "name": "ESP",
+        "label": "ESP",
+        "tooltip": "",
+        "group": "3092b7711ff310b8",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "control",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "open",
+        "onvalueType": "str",
+        "onicon": "fa-2x fa-power-off",
+        "oncolor": "lightgreen",
+        "offvalue": "close",
+        "offvalueType": "str",
+        "officon": "fa-2x fa-power-off",
+        "offcolor": "red",
+        "animate": true,
+        "className": "",
+        "x": 70,
+        "y": 540,
+        "wires": [
+            [
+                "28f8adb07ca5c180",
+                "2ebee63cd19a113b"
+            ]
+        ]
+    },
+    {
+        "id": "0b1973cc0239e6e9",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "##ID",
+        "func": "if(msg.payload.includes(\"##ID\"))\n{\n    msg.payload = \"##ID1;\"\n    return msg;\n}\nelse\n{\n    msg.payload = \"##ID0;\";\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 140,
+        "wires": [
+            [
+                "6f538709619aa7f5"
+            ]
+        ]
+    },
+    {
+        "id": "6aabd9545f128e13",
+        "type": "function",
+        "z": "747e5501.ce75cc",
+        "name": "##CN1",
+        "func": "if(msg.payload.includes(\"##CN\"))\n{\n    msg.payload = \"##CN1;\"\n    return msg;\n}\nelse\n{\n    msg.payload = \"##CN0;\";\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 180,
+        "wires": [
+            [
+                "6f538709619aa7f5"
+            ]
+        ]
+    },
+    {
+        "id": "92b43b457b80bd05",
+        "type": "tcp in",
+        "z": "747e5501.ce75cc",
+        "name": "N1MM",
+        "server": "server",
+        "host": "",
+        "port": "7368",
+        "datamode": "stream",
+        "datatype": "buffer",
+        "newline": "",
+        "topic": "",
+        "base64": false,
+        "tls": "",
+        "x": 350,
+        "y": 140,
+        "wires": [
+            [
+                "9ebba5a09e0c9982",
+                "6941e6852473e7db"
+            ]
+        ]
+    },
+    {
+        "id": "b090736e50babca1",
+        "type": "tcp out",
+        "z": "747e5501.ce75cc",
+        "name": "N1MM",
+        "host": "",
+        "port": "",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "tls": "",
+        "x": 1130,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "6f538709619aa7f5",
+        "type": "converter",
+        "z": "747e5501.ce75cc",
+        "name": "UTF-16LE Encoding",
+        "from": "utf16le",
+        "x": 960,
+        "y": 160,
+        "wires": [
+            [
+                "b090736e50babca1"
+            ]
+        ]
+    },
+    {
+        "id": "9ebba5a09e0c9982",
+        "type": "converter",
+        "z": "747e5501.ce75cc",
+        "name": "UTF-16LE Encoding",
+        "from": "utf16le",
+        "x": 540,
+        "y": 140,
+        "wires": [
+            [
+                "0b1973cc0239e6e9",
+                "6aabd9545f128e13"
+            ]
+        ]
+    },
+    {
+        "id": "3092b7711ff310b8",
+        "type": "ui_group",
+        "name": "TS-990",
+        "tab": "8f98f4ce.30eb48",
+        "order": 1,
+        "disp": true,
+        "width": "5",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "3f3236e1fcd06105",
+        "type": "ui_group",
+        "name": "Diagnostics",
+        "tab": "acddcb1e2cc1c03c",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8f98f4ce.30eb48",
+        "type": "ui_tab",
+        "name": "VU3ESV Shack Control",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "acddcb1e2cc1c03c",
+        "type": "ui_tab",
+        "name": "Diagnostics",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
